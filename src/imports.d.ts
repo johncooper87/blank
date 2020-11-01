@@ -6,6 +6,8 @@ declare const ngettext: typeof import('ttag').ngettext;
 declare const React: typeof import('react');
 declare const memo: typeof import('react').memo;
 declare const useState: typeof import('react').useState;
+declare const useMemo: typeof import('react').useMemo;
+declare const useRef: typeof import('react').useRef;
 
 declare const FORM_ERROR: typeof import('final-form').FORM_ERROR;
 declare const ARRAY_ERROR: typeof import('final-form').ARRAY_ERROR;

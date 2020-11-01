@@ -97,6 +97,8 @@ module.exports = {
       React: ['react'],
       memo: ['react', 'memo'],
       useState: ['react', 'useState'],
+      useMemo: ['react', 'useMemo'],
+      useRef: ['react', 'useRef'],
 
       // final-form
       FORM_ERROR: ['final-form', 'FORM_ERROR'],

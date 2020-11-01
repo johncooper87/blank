@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import styles1 from './styles1.css';
 import { addLocale, useLocale } from 'ttag';
+import { useQuery, useMutation, QueryConfig, queryCache } from 'react-query';
 
 // async function switchLang(lang: string) {
 //   if (lang === 'ru') {
@@ -33,7 +34,7 @@ function validateBadHabbits(values: string[]) {
   return 'You must choose at least 1 bad habbit';
 }
 
-function validateWishlist(values) {
+function validateWishlist(values: string[]) {
   if (!values) return;
   const wishes = new Map<string, number>();
   let errors = [];
@@ -58,6 +59,35 @@ function logValues(values) {
   console.log(values);
 }
 
+const users = [{
+  id: 0,
+  name: 'John0'
+}, {
+  id: 1,
+  name: 'John1'
+}, {
+  id: 2,
+  name: 'John2'
+}];
+
+async function fetchApi1(params) {
+  const userId = params?.userId;
+  const user: any = await new Promise(resolve => setTimeout(
+    () => resolve(users[userId]),
+    1000
+  ));
+  return user?.name;
+}
+
+function getUser(key, params) {
+  console.log(queryCache);
+  const userId = params?.userId;
+  console.log(queryCache.getQuery(key));
+  console.log(key);
+  if (userId == null) return queryCache.getQueryData(key);
+  return fetchApi1(params);
+}
+
 function App() {
 
   console.log('App');
@@ -70,6 +100,12 @@ function App() {
     logValues(values);
     setInitialValues(values);
   };
+
+  const [queryParams, setQueryParams] = useState(null);
+
+  const { data, isLoading } = useQuery(['api1', queryParams], getUser, {
+    //enabled: queryParams,
+  });
 
   return <div className={styles1.root1}>
     {/* <div>
@@ -87,6 +123,21 @@ function App() {
     <Suspense fallback={<div>{t`loading ...`}</div>}>
       {showComp1 && <Comp1 />}
     </Suspense> */}
+
+    <div>
+      <button onClick={() => setQueryParams({ userId: 0 })}>user 0</button>
+      <button onClick={() => setQueryParams({ userId: 1 })}>user 1</button>
+      <button onClick={() => setQueryParams({ userId: 2 })}>user 2</button>
+      <button onClick={() => setQueryParams(null)}>no user</button>
+    </div>
+    <div>
+      {isLoading
+        ? '...loading'
+        : <>
+          {data}
+        </>
+      }
+    </div>
 
     <div>
 
@@ -118,11 +169,13 @@ function App() {
 
             <div style={{ padding: '8px' }}>
               <div>Wishlist:</div>
-              <FieldArray<string> name="wishlist" validate={validateWishlist}>
+              <FieldArray name="wishlist"
+              //validate={validateWishlist}
+              >
                 {({ map, push, remove }) => <>
                 
                   {map(
-                    (name, index) => <div key={name} style={{ padding: '4px' }}>
+                    (key, name, index) => <div key={index} data-key={key} style={{ padding: '4px' }}>
                       <TextField label={'wish ' + index} name={name} />
                       <button onClick={() => remove(index)}>Delete</button>
                     </div>
