@@ -2,7 +2,7 @@ import { FormSubscription } from 'final-form';
 import { useForm, useFormState } from 'react-final-form';
 
 const subscription: FormSubscription = {
-  invalid: true,
+  hasValidationErrors: true,
   submitFailed: true,
   dirtySinceLastSubmit: true,
   pristine: true
@@ -11,10 +11,10 @@ const subscription: FormSubscription = {
 function SubmitButton({ disablePristine = false }) {
   // console.log('SubmitButton'); //DEBUG
 
-  const { invalid, submitFailed, dirtySinceLastSubmit, pristine } = useFormState({ subscription });
+  const { hasValidationErrors, submitFailed, dirtySinceLastSubmit, pristine } = useFormState({ subscription });
   const { submit } = useForm();
   const disabled =
-    invalid && (submitFailed || dirtySinceLastSubmit)
+    hasValidationErrors && (submitFailed || dirtySinceLastSubmit)
     || (disablePristine && pristine);
 
   return (

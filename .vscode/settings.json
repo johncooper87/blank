@@ -29,6 +29,7 @@
   "emmet.triggerExpansionOnTab": true,
 
   "explorer.autoReveal": false,
+  "explorer.compactFolders": false,
 
   "files.exclude": {
     "node_modules": true,

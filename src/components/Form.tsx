@@ -6,7 +6,7 @@ type FormProps = Pick<
   FP & {
     children: ReactNode;
   },
-  'onSubmit'|'initialValues'|'validate'|'children'
+  'onSubmit' | 'initialValues' | 'validate' | 'children'
 >;
 
 const subscription: FormSubscription = {
@@ -17,6 +17,7 @@ const mutators = {
 };
 
 function Form({ onSubmit, initialValues, validate, children }: FormProps) {
+  // console.log('Form') /*DEBUG*/
 
   return React.createElement(FF_Form, {
     onSubmit,
@@ -25,7 +26,6 @@ function Form({ onSubmit, initialValues, validate, children }: FormProps) {
     subscription,
     mutators,
     children: () => {
-      // console.log('Form render') /*DEBUG*/
       return children;
     }
   });

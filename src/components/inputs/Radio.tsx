@@ -20,9 +20,10 @@ function Radio({ name, value, label, ...props }: RadioProps) {
   // console.log('Radio:', _name); //DEBUG
 
   const {
-    input: { checked, onChange },
-  } = useField(_name, { value, subscription, type });
+    input: { checked, ...input },
+  } = useField(_name, { type, value, subscription });
 
+  const onChange = useCallback(input.onChange, []);
   const inputProps = { type, value, checked, onChange };
 
   return <label {...props} style={{ padding: '4px' }}>

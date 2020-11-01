@@ -20,10 +20,10 @@ function Checkbox({ name, value, label, ...props }: CheckboxProps) {
   // console.log('Checkbox:', _name); //DEBUG
 
   const {
-    input: { checked, onChange },
-  } = useField(_name, { value, subscription, type });
+    input: { checked, onChange, onBlur },
+  } = useField(_name, { type, value, subscription,  });
 
-  const inputProps = { type, value, checked, onChange };
+  const inputProps = { type, value, checked, onChange, onBlur };
 
   return <label {...props} style={{ padding: '4px' }}>
       {label}

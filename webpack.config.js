@@ -98,7 +98,9 @@ module.exports = {
       memo: ['react', 'memo'],
       useState: ['react', 'useState'],
       useMemo: ['react', 'useMemo'],
+      useCallback: ['react', 'useCallback'],
       useRef: ['react', 'useRef'],
+      ReactDOM: ['react-dom'],
 
       // final-form
       FORM_ERROR: ['final-form', 'FORM_ERROR'],
@@ -113,7 +115,11 @@ module.exports = {
       Radio: [path.resolve(__dirname, 'src/components/inputs/Radio'), 'default'],
       Checkbox: [path.resolve(__dirname, 'src/components/inputs/Checkbox'), 'default'],
       FieldError: [path.resolve(__dirname, 'src/components/inputs/FieldError'), 'default'],
+      FormError: [path.resolve(__dirname, 'src/components/FormError'), 'default'],
       FieldArray: [path.resolve(__dirname, 'src/components/FieldArray'), 'default'],
+
+      // router
+      _history: [path.resolve(__dirname, 'src/services/routing'), '_history'],
     }),
 
   ],

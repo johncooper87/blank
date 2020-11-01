@@ -5,7 +5,9 @@ import { useFeildNameContext } from '../FieldNameContext';
 const subscription: FieldSubscription = {
   value: true,
   touched: true,
-  error: true
+  error: true,
+  submitError: true,
+  dirtySinceLastSubmit: true
 };
 
 interface TextFieldProps {
@@ -23,17 +25,21 @@ function TextField({ name, validate, label, ...props }: TextFieldProps) {
 
   const {
     input: { value, onChange, onBlur },
-    meta: { touched, error }
-  } = useField(_name, { validate, subscription, type });
+    meta: { touched, error, dirtySinceLastSubmit, submitError }
+  } = useField(_name, { type, validate, subscription });
 
   const inputProps = { type, value, onChange, onBlur };
+
+  const showError = (touched && error && typeof error === 'string')
+  || (!dirtySinceLastSubmit && submitError && typeof submitError === 'string');
 
   return <label {...props} style={{ padding: '4px', display: 'inline-flex' }}>
     {label}
     <span>
       <input {...inputProps} style={{ marginLeft: '4px' }} />
-      {touched && error &&
-        <div style={{ color: 'red', fontSize: '14px', textAlign: 'left' }}>{error}</div>
+      {
+        showError
+        && <div style={{ color: 'red', fontSize: '14px', textAlign: 'left' }}>{error || submitError}</div>
       }
     </span>
   </label>;
