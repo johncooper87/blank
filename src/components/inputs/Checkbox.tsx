@@ -21,7 +21,7 @@ function Checkbox({ name, value, label, ...props }: CheckboxProps) {
 
   const {
     input: { checked, onChange, onBlur },
-  } = useField(_name, { type, value, subscription,  });
+  } = useField(_name, { type, value, subscription });
 
   const inputProps = { type, value, checked, onChange, onBlur };
 

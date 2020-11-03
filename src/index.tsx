@@ -1,5 +1,6 @@
 import { Router } from 'react-router';
-import styles1 from './styles1.css';
+//import styles1 from './styles1.css';
+import './styles1.css';
 import { addLocale, useLocale } from 'ttag';
 import FormExample from './views/FormExample';
 import QueryExample from './views/QueryExample';
@@ -21,21 +22,20 @@ import { useRouteMatch } from 'react-router-dom';
 
 function App() {
 
-  const match = Boolean(useRouteMatch('/admin')).toString();
-  console.log(match);
-
   console.log('App');
+
+  const isAdminPage = Boolean(useRouteMatch('/admin')).toString();
 
   // const [showComp1, setShowComp1] = useState(false);
   // const [clickCount, setClickCount] = useState(0);
 
-  return <div className={styles1.root1}>
+  return <div className="root1">
 
     <div>
       <button onClick={() => _history.push('/admin')}>go admin page</button>
       <button onClick={() => _history.push('/')}>go home page</button>
     </div>
-    <div>Is admin page: {match}</div>
+    <div>Is admin page: {isAdminPage}</div>
 
 
 

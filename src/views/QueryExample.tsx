@@ -11,7 +11,7 @@ const users = [{
   name: 'John2'
 }];
 
-async function fetchUser(key, userId) {
+async function fetchUser(key, { userId }) {
 
   if (userId === null) return queryCache.getQueryData([key, 2]);
 
@@ -28,14 +28,16 @@ function QueryExample() {
 
   const [userId, setUserId] = useState(null);
 
-  const { data, isFetching } = useQuery<any>(['user', userId], fetchUser, {
+  const { data, isFetching } = useQuery<any>(['user', { userId }], fetchUser, {
     enabled: userId !== null,
     cacheTime: 0,
+    //cacheTime: 1000000,
     keepPreviousData: true,
     refetchOnWindowFocus: false,
   });
 
-  //console.log(queryCache.getQuery(['user', 1]));
+  console.log(queryCache.getQueries(['user'])[0]);
+  //console.log(queryCache.getQueries(['user']).filter(q => q.gcTimeout === undefined)[0]);
 
   return <div>
 

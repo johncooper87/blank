@@ -2,7 +2,7 @@ import { FormSubscription } from 'final-form';
 import { useForm, useFormState } from 'react-final-form';
 
 const subscription: FormSubscription = {
-  pristine: true,
+  pristine: true
 };
 
 function ResetButton() {

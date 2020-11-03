@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { ProvidePlugin } = require('webpack');
+const tsProvide = require('./ts-provide');
 
 const cssLoader = {
   loader: 'css-loader',
@@ -18,6 +19,10 @@ const dev = !process.argv.includes('--mode=production');
 
 const styleLoader = dev ? MiniCssExtractPlugin.loader : 'style-loader';
 
+const provided = tsProvide('./src/imports.d.ts');
+
+console.log(provided);
+
 module.exports = {
 
   mode: dev ? 'development' : 'production',
@@ -31,9 +36,6 @@ module.exports = {
 
       {
         test: /\.po$/,
-        // use: [{
-        //   loader: path.resolve('po-loader.js'),
-        // }],
         use: ['json5-loader', 'po-gettext-loader']
       },
 
@@ -85,42 +87,44 @@ module.exports = {
 
     new MiniCssExtractPlugin(),
 
-    new ProvidePlugin({
+    new ProvidePlugin(provided),
+    // new ProvidePlugin({
 
-      // ttag
-      t: ['ttag', 't'],
-      jt: ['ttag', 'jt'],
-      msgid: ['ttag', 'msgid'],
-      ngettext: ['ttag', 'ngettext'],
+    //   // ttag
+    //   t: ['ttag', 't'],
+    //   jt: ['ttag', 'jt'],
+    //   msgid: ['ttag', 'msgid'],
+    //   ngettext: ['ttag', 'ngettext'],
 
-      // react
-      React: ['react'],
-      memo: ['react', 'memo'],
-      useState: ['react', 'useState'],
-      useMemo: ['react', 'useMemo'],
-      useCallback: ['react', 'useCallback'],
-      useRef: ['react', 'useRef'],
-      ReactDOM: ['react-dom'],
+    //   // react
+    //   React: ['react'],
+    //   memo: ['react', 'memo'],
+    //   useState: ['react', 'useState'],
+    //   useMemo: ['react', 'useMemo'],
+    //   useCallback: ['react', 'useCallback'],
+    //   useRef: ['react', 'useRef'],
+    //   ReactDOM: ['react-dom'],
 
-      // final-form
-      FORM_ERROR: ['final-form', 'FORM_ERROR'],
-      ARRAY_ERROR: ['final-form', 'ARRAY_ERROR'],
+    //   // final-form
+    //   FORM_ERROR: ['final-form', 'FORM_ERROR'],
+    //   ARRAY_ERROR: ['final-form', 'ARRAY_ERROR'],
 
-      // components
-      Form: [path.resolve(__dirname, 'src/components/Form'), 'default'],
-      SubmitButton: [path.resolve(__dirname, 'src/components/SubmitButton'), 'default'],
-      ResetButton: [path.resolve(__dirname, 'src/components/ResetButton'), 'default'],
-      Field: [path.resolve(__dirname, 'src/components/Field'), 'default'],
-      TextField: [path.resolve(__dirname, 'src/components/inputs/TextField'), 'default'],
-      Radio: [path.resolve(__dirname, 'src/components/inputs/Radio'), 'default'],
-      Checkbox: [path.resolve(__dirname, 'src/components/inputs/Checkbox'), 'default'],
-      FieldError: [path.resolve(__dirname, 'src/components/inputs/FieldError'), 'default'],
-      FormError: [path.resolve(__dirname, 'src/components/FormError'), 'default'],
-      FieldArray: [path.resolve(__dirname, 'src/components/FieldArray'), 'default'],
+    //   // components
+    //   Form: [path.resolve(__dirname, 'src/components/Form'), 'default'],
+    //   SubmitButton: [path.resolve(__dirname, 'src/components/SubmitButton'), 'default'],
+    //   ResetButton: [path.resolve(__dirname, 'src/components/ResetButton'), 'default'],
+    //   Field: [path.resolve(__dirname, 'src/components/Field'), 'default'],
+    //   TextField: [path.resolve(__dirname, 'src/components/inputs/TextField'), 'default'],
+    //   Radio: [path.resolve(__dirname, 'src/components/inputs/Radio'), 'default'],
+    //   Checkbox: [path.resolve(__dirname, 'src/components/inputs/Checkbox'), 'default'],
+    //   FieldError: [path.resolve(__dirname, 'src/components/inputs/FieldError'), 'default'],
+    //   FormError: [path.resolve(__dirname, 'src/components/FormError'), 'default'],
+    //   FieldArray: [path.resolve(__dirname, 'src/components/FieldArray'), 'default'],
 
-      // router
-      _history: [path.resolve(__dirname, 'src/services/routing'), '_history'],
-    }),
+    //   // router
+    //   _history: [path.resolve(__dirname, 'src/services/routing'), '_history'],
+
+    // }),
 
   ],
 
