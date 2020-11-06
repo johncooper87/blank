@@ -9,6 +9,7 @@ declare const useState: typeof import('react').useState;
 declare const useMemo: typeof import('react').useMemo;
 declare const useCallback: typeof import('react').useCallback;
 declare const useRef: typeof import('react').useRef;
+declare const useEffect: typeof import('react').useEffect;
 declare const ReactDOM: typeof import('react-dom');
 
 declare const FORM_ERROR: typeof import('final-form').FORM_ERROR;

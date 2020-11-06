@@ -1,9 +1,5 @@
 import * as validators from './validators';
 
-function logValues(values) {
-  console.log(values);
-}
-
 function FormExample() {
 
   console.log('FormExample');
@@ -14,7 +10,7 @@ function FormExample() {
   });
 
   const onSubmit = async (values) => {
-    logValues(values);
+    console.log(values);
     if (values.firstname === 'John') return {
       firstname: `Name 'John' already reserved`,
       [FORM_ERROR]: `Failed to submit form`

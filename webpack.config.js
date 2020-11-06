@@ -21,8 +21,6 @@ const styleLoader = dev ? MiniCssExtractPlugin.loader : 'style-loader';
 
 const provided = tsProvide('./src/imports.d.ts');
 
-console.log(provided);
-
 module.exports = {
 
   mode: dev ? 'development' : 'production',

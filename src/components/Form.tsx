@@ -1,12 +1,17 @@
 import { FormSubscription, SubmissionErrors } from 'final-form';
 import arrayMutators from 'final-form-arrays';
 import { useCallback } from 'react';
-import { Form as FF_Form, FormProps as FP } from 'react-final-form';
+import { Form as FF_Form, FormProps as FF_FormProps } from 'react-final-form';
 
-type FormProps = Pick<FP,'initialValues' | 'validate'> & {
-  children: ReactNode;
-  onSubmit: (values: { [key: string]: any }, initialValues: { [key: string]: any }) => void | SubmissionErrors | Promise<SubmissionErrors>;
-};
+type FormProps<FormValues, InitialFormValues> =
+  Pick<FF_FormProps<FormValues, InitialFormValues>,'initialValues' | 'validate'>
+  & {
+    children: ReactNode;
+    onSubmit: (
+      values: FormValues,
+      initialValues: InitialFormValues,
+    ) => void | SubmissionErrors | Promise<SubmissionErrors>;
+  };
 
 const subscription: FormSubscription = {
 };
@@ -15,7 +20,7 @@ const mutators = {
   ...arrayMutators
 };
 
-function Form({ onSubmit, initialValues, validate, children }: FormProps) {
+function Form<FormValues = Record<string, any>, InitialFormValues = Partial<FormValues>>({ onSubmit, initialValues, validate, children }: FormProps<FormValues, InitialFormValues>) {
   // console.log('Form') /*DEBUG*/
 
   const _onSubmit = useCallback((values) => onSubmit(values, initialValues), [initialValues]);
