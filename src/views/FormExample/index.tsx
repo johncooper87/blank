@@ -6,7 +6,8 @@ function FormExample() {
 
   const [initialValues, setInitialValues] = useState({
     lastname: 'Cooper',
-    wishlist: ['eat', 'eat']
+    wishlist: ['eat', 'eat'],
+    gender: 'male'
   });
 
   const onSubmit = async (values) => {

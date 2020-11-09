@@ -47,18 +47,10 @@
 
 // export default memo(TextField);
 
-import { FieldState, FieldSubscription, FieldValidator } from 'final-form';
-import { useForm } from 'react-final-form';
+import { FieldValidator } from 'final-form';
 import { useFeildNameContext } from '../FieldNameContext';
-
-const subscription: FieldSubscription = {
-  value: true,
-  dirty: true,
-  touched: true,
-  error: true,
-  submitError: true,
-  dirtySinceLastSubmit: true
-};
+import useInput from './useInput';
+import useError from './useError';
 
 interface TextFieldProps {
   name: string;
@@ -66,66 +58,31 @@ interface TextFieldProps {
   label?: string;
 }
 
+function onInputEvent(event: InputEvent) {
+  return event.target.value;
+}
+
+function onReset(node: HTMLInputElement, value: string) {
+  node.value = value || '';
+}
+
+function onErrorChange(node: HTMLDivElement, error: string) {
+  node.innerText = error;
+}
+
 function TextField({ name, validate, label, ...props }: TextFieldProps) {
 
   const _name = useFeildNameContext(name);
   console.log('TextField:', _name); //DEBUG
 
-  const form = useForm();
-
-  const _this = useRef<Record<string, any>>({}).current;
-  if (!_this.registered) {
-
-    _this.registered = true;
-    _this.inputRef = (el: HTMLInputElement) => _this.inputEl = el;
-    _this.errorRef = (el: HTMLDivElement) => _this.errorEl = el;
-
-    const callback = (state: FieldState<string>) => {
-
-      const { value, dirty, touched, error, submitError, dirtySinceLastSubmit } = state;
-      console.log(_name, ':', state);
-      const { inputEl, errorEl } = _this;
-      if (dirty === false && _this.dirty === true) inputEl.value = value || '';
-      _this.dirty = dirty;
-
-      const showError = (touched && error && typeof error === 'string')
-        || (!dirtySinceLastSubmit && submitError && typeof submitError === 'string');
-
-      if (_this.showError !== showError || _this.error !== error) {
-        _this.showError = showError;
-        _this.error = error;
-        if (errorEl != null) errorEl.innerText = showError ? _this.error : '';
-      }
-    };
-
-    _this.unsubscribe = form.registerField(_name, callback, subscription, { getValidator: () => validate });
-    _this.defaultValue = form.getFieldState(_name).value;
-  }
-
-  useEffect(() => {
-
-    //console.log(_name, ':', _this);
-    _this.inputEl.addEventListener('input', ({ target }) => {
-      //console.log('change:', _name);
-      form.change(_name, target.value)
-    });
-
-    _this.inputEl.addEventListener('blur', ({ target }) => {
-      //console.log('change:', _name);
-      const { blur, touched } = form.getFieldState(_name);
-      if (!touched) blur();
-    });
-
-    return () => {
-      _this.unsubscribe;
-    };
-  }, []);
+  const inputRef = useInput<string>(_name, { onInputEvent, onReset });
+  const errorRef = useError<string>(_name, { validate, onErrorChange });
   
   return <label {...props} style={{ padding: '4px', display: 'inline-flex' }}>
     {label}
     <span>
-      <input ref={_this.inputRef} defaultValue={_this.defaultValue} style={{ marginLeft: '4px' }} />
-      <div ref={_this.errorRef} style={{ color: 'red', fontSize: '14px', textAlign: 'left' }} />
+      <input ref={inputRef} style={{ marginLeft: '4px' }} />
+      <div ref={errorRef} style={{ color: 'red', fontSize: '14px', textAlign: 'left' }} />
     </span>
   </label>;
 };

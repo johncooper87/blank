@@ -32,7 +32,9 @@ function Form<FormValues = Record<string, any>, InitialFormValues = Partial<Form
     subscription,
     mutators,
     children: () => {
-      return children;
+      return <>
+        {children}
+      </>;
     }
   });
 }
