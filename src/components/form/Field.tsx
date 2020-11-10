@@ -1,7 +1,7 @@
 import { FieldValidator, FieldSubscription } from 'final-form';
 import { useField } from 'react-final-form';
-import { FieldNameContext } from './FieldNameContext';
-import { useFeildNameContext } from './FieldNameContext';
+import { FieldNameContext } from '../contexts/FieldNameContext';
+import { useFeildNameContext } from '../contexts/FieldNameContext';
 
 const subscription: FieldSubscription = {
 };

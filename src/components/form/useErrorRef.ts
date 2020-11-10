@@ -13,7 +13,7 @@ interface UseErrorConfig<T> {
   onErrorChange: (node: Element, error: string) => void;
 }
 
-function useError<T>(name: string, { validate, onErrorChange }: UseErrorConfig<T>) {
+function useErrorRef<T>(name: string, { validate, onErrorChange }: UseErrorConfig<T>) {
 
   const form = useForm();
   const _this_ref = useRef<Record<string, any>>({});
@@ -53,4 +53,4 @@ function useError<T>(name: string, { validate, onErrorChange }: UseErrorConfig<T
   return _this.refCallback;
 };
 
-export default useError;
+export default useErrorRef;

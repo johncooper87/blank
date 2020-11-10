@@ -62,10 +62,10 @@ module.exports = {
 
   resolve: {
     extensions: [ '.tsx', '.ts', '.js' ],
-    // alias: {
-    //   'react': path.resolve(__dirname, 'node_modules/react'),
-    //   'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),
-    // }
+    alias: {
+      '@components': path.resolve(__dirname, 'src/components'),
+      '@hooks': path.resolve(__dirname, 'src/hooks'),
+    }
   },
 
   output: {

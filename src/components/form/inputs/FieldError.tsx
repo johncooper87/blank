@@ -1,6 +1,6 @@
 import { FieldSubscription } from 'final-form';
 import { useField } from 'react-final-form';
-import { useFeildNameContext } from '../FieldNameContext';
+import { useFeildNameContext } from '../../contexts/FieldNameContext';
 
 const subscription: FieldSubscription = {
   touched: true,

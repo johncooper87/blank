@@ -49,8 +49,8 @@
 
 import { FieldValidator } from 'final-form';
 import { useFeildNameContext } from '../FieldNameContext';
-import useInput from './useInput';
-import useError from './useError';
+import useInputRef from '../useInputRef';
+import useErrorRef from '../useErrorRef';
 
 interface TextFieldProps {
   name: string;
@@ -58,11 +58,11 @@ interface TextFieldProps {
   label?: string;
 }
 
-function onInputEvent(event: InputEvent) {
+function getNextValue(event: InputEvent) {
   return event.target.value;
 }
 
-function onReset(node: HTMLInputElement, value: string) {
+function updateInputEl(node: HTMLInputElement, value: string) {
   node.value = value || '';
 }
 
@@ -73,10 +73,9 @@ function onErrorChange(node: HTMLDivElement, error: string) {
 function TextField({ name, validate, label, ...props }: TextFieldProps) {
 
   const _name = useFeildNameContext(name);
-  console.log('TextField:', _name); //DEBUG
 
-  const inputRef = useInput<string>(_name, { onInputEvent, onReset });
-  const errorRef = useError<string>(_name, { validate, onErrorChange });
+  const inputRef = useInputRef<string>(_name, getNextValue, updateInputEl);
+  const errorRef = useErrorRef<string>(_name, { validate, onErrorChange });
   
   return <label {...props} style={{ padding: '4px', display: 'inline-flex' }}>
     {label}

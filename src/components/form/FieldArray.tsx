@@ -1,7 +1,7 @@
 import { FieldSubscription, FieldValidator } from 'final-form';
 import { useField } from 'react-final-form';
 import { useFieldArray } from 'react-final-form-arrays';
-import { useFeildNameContext } from './FieldNameContext';
+import { useFeildNameContext } from '../contexts/FieldNameContext';
 
 type FieldArrayRenderProps<T> = {
   push: (value?: T) => void;

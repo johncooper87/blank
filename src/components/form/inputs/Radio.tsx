@@ -34,8 +34,8 @@
 
 // export default memo(Radio);
 
-import { useFeildNameContext } from '../FieldNameContext';
-import useInput from './useInput';
+import { useFeildNameContext } from '../../contexts/FieldNameContext';
+import useInputRef from 'hooks/useInputRef';
 
 interface RadioProps {
   name?: string;
@@ -57,7 +57,7 @@ function Radio({ name, value, label, ...props }: RadioProps) {
   const _name = useFeildNameContext(name);
   // console.log('Radio:', _name); //DEBUG
 
-  const inputRef = useInput<string>(_name, { onInputEvent, onReset });
+  const inputRef = useInputRef<string>(_name, { onInputEvent, onReset });
 
   return <label {...props} style={{ padding: '4px' }}>
       {label}
