@@ -13,8 +13,7 @@ function useInputRef<FieldValue = any>(
 ) {
 
   const form = useForm();
-  const _ = useRef<Record<string, any>>({});
-  const watcher = _.current;
+  const watcher = useArbitrary();
 
   if (!watcher.initialized) {
 
@@ -55,10 +54,6 @@ function useInputRef<FieldValue = any>(
       if (!touched) blur();
     };
 
-    watcher.clear = () => {  
-      return () => { _.current = null; };
-    }
-
   }
 
   const shouldResubscribe = watcher.name !== name || watcher.form !== form;
@@ -79,8 +74,6 @@ function useInputRef<FieldValue = any>(
     }
     watcher.updateInputEl = updateInputEl;
   }
-
-  useEffect(watcher.clear, []);
   
   return watcher.ref;
 };

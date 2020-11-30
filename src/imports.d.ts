@@ -17,7 +17,7 @@ declare const ARRAY_ERROR: typeof import('final-form').ARRAY_ERROR;
 
 declare const _history: typeof import('./services/routing')._history;
 
-declare const useInstance: typeof import('./useInstance');
+declare const useArbitrary: typeof import('./common/useArbitrary').default;
 
 declare const Form: typeof import('./form/Form').default;
 declare const SubmitButton: typeof import('./form/SubmitButton').default;
