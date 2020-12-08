@@ -1,10 +1,52 @@
-import { FieldState, FieldSubscription } from 'final-form';
+import { FieldState, FieldSubscription, FormApi, Unsubscribe, FieldValidator } from 'final-form';
 import { useForm } from 'react-final-form';
 
 const subscription: FieldSubscription = {
   value: true,
-  dirty: true
+  dirty: true,
 };
+
+type Callback<FieldValue> = (nextState: FieldState<FieldValue>, prevState: FieldState<FieldValue>) => void
+
+class FieldSubscriber<FieldValue> {
+  form: FormApi;
+  name: string;
+  unsubscribe: Unsubscribe;
+  currentState: FieldState<FieldValue> = Object();
+  callback: Callback<FieldValue>;
+  
+  constructor() {
+    this.invokeCallback = this.invokeCallback.bind(this);
+  }
+
+  invokeCallback(state: FieldState<FieldValue>) {
+    this.callback(state, this.currentState);
+    this.currentState = state;
+  }
+
+  subscribe(form: FormApi, name: string, callback: Callback<FieldValue>, subscription: FieldSubscription, validate: FieldValidator<FieldValue>) {
+    // TODO: add callback, subscription and validate comparison
+    if (this.form === form && this.name === name) return false;
+    if (this.unsubscribe !== undefined) this.unsubscribe();
+    this.form = form;
+    this.name = name;
+    this.callback = callback;
+    this.currentState = Object();
+    this.unsubscribe = form.registerField(name, this.invokeCallback, subscription, { getValidator: () => validate });
+    return true;
+  }
+}
+
+class FieldRef<T, P> extends FieldSubscriber<T> {
+  private inputEl: HTMLInputElement;
+  abstract refCallback: React.RefCallback<P>;
+
+  invokeRefCallback(inputEl: HTMLInputElement) {
+    this.inputEl = inputEl;
+    if (inputEl === null) return;
+    this.refCallback()
+  }
+}
 
 function useInputRef<FieldValue = any>(
   name: string,
