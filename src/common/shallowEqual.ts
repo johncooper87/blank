@@ -26,35 +26,51 @@ function shallowEqual(value1: any, value2: any) {
 
 export default shallowEqual
 
-console.log(shallowEqual(
-  1,
-  1
-));
-console.log(shallowEqual(
-  1,
-  2
-));
-console.log(shallowEqual(
-  'asd',
-  'asd'
-));
-console.log(shallowEqual(
-  'asd',
-  'asdf'
-));
-console.log(shallowEqual(
-  [1, 2],
-  [1, 2]
-));
-console.log(shallowEqual(
-  [1, 2],
-  [1, 2, 3]
-));
-console.log(shallowEqual(
-  [1, 2],
-  [1, 3]
-));
-console.log(shallowEqual(
-  { a: 'asd', b: 'qwe' },
-  { a: 'asd', b: 'qwe' }
-));
+// console.log(shallowEqual(
+//   1,
+//   1
+// ) === true);
+// console.log(shallowEqual(
+//   1,
+//   2
+// ) === false);
+// console.log(shallowEqual(
+//   'asd',
+//   'asd'
+// ) === true);
+// console.log(shallowEqual(
+//   'asd',
+//   'asdf'
+// ) === false);
+// console.log(shallowEqual(
+//   [1, 2],
+//   [1, 2]
+// ) === true);
+// console.log(shallowEqual(
+//   [1, 2],
+//   [1, 2, 3]
+// ) === false);
+// console.log(shallowEqual(
+//   [1, 2],
+//   [1, 3]
+// ) === false);
+// console.log(shallowEqual(
+//   { a: 'asd', b: 'qwe' },
+//   { a: 'asd', b: 'qwe' }
+// ) === true);
+// console.log(shallowEqual(
+//   { a: 'asd', b: 'qwe' },
+//   { a: 'asd', b: 'asd' }
+// ) === false);
+// console.log(shallowEqual(
+//   { a: 'asd', b: 'qwe' },
+//   { a: 'asd', b: 'qwe', c: 'zxc' }
+// ) === false);
+// console.log(shallowEqual(
+//   { 0: 1, 1: 3 },
+//   [1, 3]
+// ) === false);
+// console.log(shallowEqual(
+//   'asd',
+//   [1, 3]
+// ) === false);

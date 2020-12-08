@@ -48,6 +48,6 @@
 
   "code-runner.executorMap": {
     "javascript": "node --harmony",
-    "typescript": "node -r ts-node"
+    "typescript": "node -r ts-node/register"
   }
 }
