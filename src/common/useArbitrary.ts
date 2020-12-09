@@ -1,15 +1,17 @@
-interface UseArbitraryHook<T> {
+interface ArbitraryHook<T> {
   cleanup: () => () => void;
   arbitrary: T;
 }
 
 function useArbitrary<T extends Record<string, any>>() {
 
-  const obj = useRef<UseArbitraryHook<T>>();
+  const obj = useRef<ArbitraryHook<T>>();
 
   if (obj.current === null) {
     obj.current = {
-      cleanup: () => () => { obj.current = null; },
+      cleanup() {
+        return () => { obj.current = null; }
+      },
       arbitrary: Object()
     };
   }
@@ -21,13 +23,13 @@ function useArbitrary<T extends Record<string, any>>() {
 
 export default useArbitrary;
 
-import useInstance from './useInstance'
+// import useInstance from './useInstance'
 
-class Class1 {
-  arg1: string;
-  arg2: number;
-  constructor(arg1: string, arg2: number) {
-    this.arg1 = arg1;
-    this.arg2 = arg2;
-  }
-}
+// class Class1 {
+//   arg1: string;
+//   arg2: number;
+//   constructor(arg1: string, arg2: number) {
+//     this.arg1 = arg1;
+//     this.arg2 = arg2;
+//   }
+// }
