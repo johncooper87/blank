@@ -25,7 +25,7 @@
 
     "lib": ["es2020", "es2019", "es2018", "DOM", "DOM.Iterable"],
 
-    "baseUrl": "src",
+    "baseUrl": "./src",
     "paths": {
       "@components/*": ["components/*"],
       "@hooks/*": ["hooks/*"],

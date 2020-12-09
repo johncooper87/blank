@@ -33,8 +33,8 @@
 
 // export default memo(Checkbox);
 
-import { useFeildNameContext } from '../../contexts/FieldNameContext';
-import useInputRef from 'hooks/useInputRef';
+import { useFeildNameContext } from 'form/FieldNameContext';
+import useInputRef from 'form/useInputRef';
 
 interface CheckboxProps {
   name?: string;
@@ -82,7 +82,7 @@ function Checkbox({ name, value, label, ...props }: CheckboxProps) {
   const _name = useFeildNameContext(name);
   // console.log('Checkbox:', _name); //DEBUG
 
-  const inputRef = useInputRef<boolean | any[]>(_name, { onInputEvent, onReset });
+  const inputRef = useInputRef<boolean | any[]>(_name, onInputEvent, onReset);
 
   return <label {...props} style={{ padding: '4px' }}>
       {label}

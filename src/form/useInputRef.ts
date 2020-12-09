@@ -6,47 +6,35 @@ const subscription: FieldSubscription = {
   dirty: true,
 };
 
-type Callback<FieldValue> = (nextState: FieldState<FieldValue>, prevState: FieldState<FieldValue>) => void
+// type Callback<T> = (nextState: FieldState<T>, prevState: FieldState<T>) => void
 
-class FieldSubscriber<FieldValue> {
-  form: FormApi;
-  name: string;
-  unsubscribe: Unsubscribe;
-  currentState: FieldState<FieldValue> = Object();
-  callback: Callback<FieldValue>;
-  
-  constructor() {
-    this.invokeCallback = this.invokeCallback.bind(this);
-  }
+// class FieldSubscriber<T> {
+//   form: FormApi;
+//   name: string;
+//   currentState: FieldState<T> = Object();
 
-  invokeCallback(state: FieldState<FieldValue>) {
-    this.callback(state, this.currentState);
-    this.currentState = state;
-  }
+//   subscribe(form: FormApi, name: string, callback: Callback<T>, subscription: FieldSubscription, validate: FieldValidator<T>) {
+//     this.form = form;
+//     this.name = name;
+//     const invokeCallback = (state: FieldState<T>) => {
+//       callback(state, this.currentState);
+//       this.currentState = state;
+//     };
+//     this.currentState = Object();
+//     return form.registerField(name, invokeCallback, subscription, { getValidator: () => validate });
+//   }
+// }
 
-  subscribe(form: FormApi, name: string, callback: Callback<FieldValue>, subscription: FieldSubscription, validate: FieldValidator<FieldValue>) {
-    // TODO: add callback, subscription and validate comparison
-    if (this.form === form && this.name === name) return false;
-    if (this.unsubscribe !== undefined) this.unsubscribe();
-    this.form = form;
-    this.name = name;
-    this.callback = callback;
-    this.currentState = Object();
-    this.unsubscribe = form.registerField(name, this.invokeCallback, subscription, { getValidator: () => validate });
-    return true;
-  }
-}
+// class FieldDOMNode<T, P> extends FieldSubscriber<T> {
+//   node: HTMLElement;
+//   ref: React.RefCallback<P>;
 
-class FieldRef<T, P> extends FieldSubscriber<T> {
-  private inputEl: HTMLInputElement;
-  abstract refCallback: React.RefCallback<P>;
-
-  invokeRefCallback(inputEl: HTMLInputElement) {
-    this.inputEl = inputEl;
-    if (inputEl === null) return;
-    this.refCallback()
-  }
-}
+//   refCallback(node: HTMLElement) {
+//     this.node = node;
+//     if (node === null) return;
+//     this.refCallback()
+//   }
+// }
 
 function useInputRef<FieldValue = any>(
   name: string,
