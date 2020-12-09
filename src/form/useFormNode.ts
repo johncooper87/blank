@@ -8,9 +8,13 @@ type UseFormNodeConfig<T, P> = {
   onConnected?: (node: P, state: FieldState<T>) => void;
 }
 
-function useFormNode<T, P extends HTMLElement>(name: string, onChange?: (nextState: FieldState<T>, prevState: FieldState<T>) => void config: UseFormNodeConfig<T, P>) {
+function useFormNode<T, P extends HTMLElement>(
+  name: string,
+  onChange: (nextState: FieldState<T>, prevState: FieldState<T>) => void,
+  config: UseFormNodeConfig<T, P>
+) {
 
-  const { validate, subscription, onConnected, onChange } = config;
+  const { validate, subscription, onConnected } = config;
   const form = useForm();
   const arbitrary = useInstance();
 
