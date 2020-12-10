@@ -103,8 +103,8 @@ const handleConnected: ConnectedCallback<string, HTMLInputElement> =
   (node, setValue, getState) =>  {
 
     node.addEventListener('input', (event: InputEvent) => {
-      const { target: { value } } = event;
-      setValue(value);
+      const { target } = event;
+      setValue(target.value);
     });
 
     node.addEventListener('blur', () => {
