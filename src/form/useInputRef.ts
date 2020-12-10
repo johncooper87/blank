@@ -67,7 +67,7 @@ function useInputRef<FieldValue = any>(
 
     watcher.callback = (state: FieldState<FieldValue>) => {
       const { value, dirty } = state;
-      if (dirty === false && watcher.dirty === true) updateInputEl(watcher.inputEl, value);
+      if (dirty === false && watcher.dirty === true) if (watcher.inputEl) updateInputEl(watcher.inputEl, value);
       watcher.dirty = dirty;
     };
 
@@ -100,7 +100,7 @@ function useInputRef<FieldValue = any>(
     if (updateInputEl !== undefined) {
       const { form, name, inputEl } = watcher;
       const { value } = form.getFieldState(name);
-      updateInputEl(inputEl, value);
+      if (watcher.inputEl) updateInputEl(inputEl, value);
     }
     watcher.updateInputEl = updateInputEl;
   }

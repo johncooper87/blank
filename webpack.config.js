@@ -63,6 +63,7 @@ module.exports = {
   resolve: {
     extensions: [ '.tsx', '.ts', '.js' ],
     alias: {
+      'common': path.resolve(__dirname, 'src/common'),
       'form': path.resolve(__dirname, 'src/form'),
       '@components': path.resolve(__dirname, 'src/components'),
       '@hooks': path.resolve(__dirname, 'src/hooks'),

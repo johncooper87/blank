@@ -7,7 +7,7 @@ function useArbitrary<T extends Record<string, any>>() {
 
   const obj = useRef<ArbitraryHook<T>>();
 
-  if (obj.current === null) {
+  if (obj.current == null) {
     obj.current = {
       cleanup() {
         return () => { obj.current = null; }

@@ -14,7 +14,7 @@ function useInstance<T extends Object = Record<string, any>, P extends any[] = u
 
   const obj = useRef<InstanceHook<T, P>>();
 
-  if (obj.current === null) {
+  if (obj.current == null) {
     obj.current = {
       cleanup() {
         return () => { obj.current = null; }
