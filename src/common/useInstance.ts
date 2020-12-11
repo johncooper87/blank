@@ -1,4 +1,4 @@
-import shallowEqual from './shallowEqual';
+import shallowEqual from './deepEqual';
 
 interface InstanceHook<T, P extends any[]> {
   cleanup: () => () => void;
