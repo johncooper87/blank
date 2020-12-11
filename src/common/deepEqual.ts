@@ -1,12 +1,18 @@
-function shallowEqual(value1: any, value2: any) {
+function deepEqual(value1: any, value2: any, depth: number) {
 
   if (value1 instanceof Object && value2 instanceof Object) {
+
+    const nextDepth = depth > 0 ? depth - 1 : depth;
 
     if (value1.constructor !== value2.constructor) return false;
 
     if (value1 instanceof Array) {
       if (value1?.length !== value2?.length) return false;
-      for (const index in value1) if (value1[index] !== value2[index]) return false;
+      for (const index in value1) {
+        if (depth === 0 && value1[index] !== value2[index]) return false;
+        else if (deepEqual(value1[index], value2[index], nextDepth)) return false;
+        
+      }
       return true;
     }
 
@@ -15,7 +21,9 @@ function shallowEqual(value1: any, value2: any) {
     if (keys1?.length !== keys2?.length) return false;
     for (const index in keys1) {
       const key = keys1[index];
-      if (key !== keys2[index] || value1[key] !== value2[key]) return false;
+      if (key !== keys2[index]) return false;
+      if (depth === 0 && value1[key] !== value2[key]) return false;
+      else if (deepEqual(value1[key], value2[key], nextDepth)) return false;
     }
     return true;
 
@@ -24,7 +32,7 @@ function shallowEqual(value1: any, value2: any) {
   return value1 === value2;
 }
 
-export default shallowEqual
+export default deepEqual
 
 // console.log(shallowEqual(
 //   1,

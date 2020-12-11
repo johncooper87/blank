@@ -1,7 +1,8 @@
 import { FieldState, FieldSubscription, FormApi, Unsubscribe, FieldValidator } from 'final-form';
 import { useForm } from 'react-final-form';
 import useInstance from 'common/useInstance'
-import shallowEqual from 'common/shallowEqual';
+import deepEqual from 'common/deepEqual';
+import { useEffect } from 'react';
 
 type ValueSetter<T> = (value: T) => void
 export type ChangeCallback<T, P> = (node: P, nextState: FieldState<T>, prevState: FieldState<T>) => void;
@@ -44,46 +45,70 @@ export function useFormNode<T, P extends HTMLElement>(
     arbitrary.initialized = true;
     arbitrary.state = Object();
 
-    arbitrary.setValue = value => arbitrary.form.change(arbitrary.name, value);
+    arbitrary.setValue = (value: T) => {
+      const { form, name } = arbitrary;
+      form.change(name, value);
+    }
+
+    arbitrary.getState = () => {
+      const { form, name } = arbitrary;
+      return form.getFieldState(name);
+    }
+
+    arbitrary.invokeConnectedCallback = () => {
+      const { onConnected, node } = arbitrary;
+      if (onConnected == null || node == null) return;
+      const { form, name, setValue, getState } = arbitrary;
+      onConnected(node, setValue, getState);
+    };
 
     arbitrary.ref = (node: P) => {
       arbitrary.node = node;
-      if (node === null) return;
-      arbitrary.onConnected?.(node, arbitrary.setValue, () => form.getFieldState(name))
+      arbitrary.invokeConnectedCallback();
     }
 
-    arbitrary.callback = (state: FieldState<T>) => {
-      if (arbitrary.node != null) arbitrary.onChange(arbitrary.node, state, arbitrary.state);
-      arbitrary.state = state;
+    arbitrary.invokeChangeCallback = (nextState: FieldState<T>) => {
+      const { node, state, onChange } = arbitrary;
+      if (node != null) onChange(node, nextState, state);
+      arbitrary.state = nextState;
     };
 
-  }
+    arbitrary.subscribe = (form, name, subscription, validate) => {
+      arbitrary.state = Object();
+      arbitrary.onChange = onChange;
+      arbitrary.form = form;
+      arbitrary.name = name;
+      arbitrary.subscription = subscription;
+      arbitrary.validate = validate;
+      arbitrary.unsubscribe = form.registerField(name, arbitrary.invokeChangeCallback, subscription, { getValidator: () => validate });
+    };
 
-  const shouldChange = arbitrary.onChange !== onChange;
-  if (shouldChange) arbitrary.onChange = onChange;
+    arbitrary.cleanup = () => {
+      return () => {
+        const { unsubscribe } = arbitrary;
+        if (unsubscribe != null) unsubscribe();
+      }
+    }
+
+  }
 
   const shouldResubscribe =
     arbitrary.form !== form
     || arbitrary.name !== name
-    || !shallowEqual(subscription, arbitrary.subscription)
-    || validate !== arbitrary.validate;
+    || !deepEqual(subscription, arbitrary.subscription, 0)
+    || validate !== arbitrary.validate
+    || onChange !== arbitrary.onChange;
   if (shouldResubscribe) {
     if (arbitrary.unsubscribe !== undefined) arbitrary.unsubscribe();
-    arbitrary.unsubscribe = form.registerField(name, arbitrary.callback, subscription, { getValidator: () => validate, silent: true });
-    arbitrary.form = form;
-    arbitrary.name = name;
-    arbitrary.subscription = subscription;
-    arbitrary.validate = validate;
+    arbitrary.subscribe(form, name, subscription, validate)
   }
 
-  if (shouldChange && !shouldResubscribe) {
-    if (arbitrary.node != null && !shouldResubscribe) onChange(arbitrary.node, arbitrary.state, Object());
-  }
-
-  if (shouldResubscribe || arbitrary.onConnected !== onConnected) {
-    if (arbitrary.node != null) onConnected?.(arbitrary.node, arbitrary.setValue, () => form.getFieldState(name))
+  if (arbitrary.onConnected !== onConnected) {
     arbitrary.onConnected = onConnected;
+    arbitrary.invokeConnectedCallback();
   }
+
+  useEffect(arbitrary.cleanup, []);
   
   return arbitrary.ref;
 };
