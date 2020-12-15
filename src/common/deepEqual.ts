@@ -1,4 +1,4 @@
-function deepEqual(value1: any, value2: any, depth: number) {
+function deepEqual(value1: any, value2: any, depth?: number) {
 
   if (value1 instanceof Object && value2 instanceof Object) {
 

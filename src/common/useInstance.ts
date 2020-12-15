@@ -1,4 +1,4 @@
-import shallowEqual from './deepEqual';
+import deepEqual from './deepEqual';
 
 interface InstanceHook<T, P extends any[]> {
   cleanup: () => () => void;
@@ -29,7 +29,7 @@ function useInstance<T extends Object = Record<string, any>, P extends any[] = u
 
   if (
     current.ctor !== ctor
-    || !shallowEqual(current.params, params)
+    || !deepEqual(current.params, params)
   ) {
     current.ctor = ctor;
     current.params = params;

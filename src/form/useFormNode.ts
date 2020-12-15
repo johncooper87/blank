@@ -45,11 +45,6 @@ export function useFormNode<T, P extends HTMLElement>(
     arbitrary.initialized = true;
     arbitrary.state = Object();
 
-    arbitrary.setValue = (value: T) => {
-      const { form, name } = arbitrary;
-      form.change(name, value);
-    }
-
     arbitrary.getState = () => {
       const { form, name } = arbitrary;
       return form.getFieldState(name);
@@ -59,6 +54,7 @@ export function useFormNode<T, P extends HTMLElement>(
       const { onConnected, node } = arbitrary;
       if (onConnected == null || node == null) return;
       const { form, name, setValue, getState } = arbitrary;
+      console.log('invokeConnectedCallback:', node, getState());
       onConnected(node, setValue, getState);
     };
 
@@ -69,7 +65,9 @@ export function useFormNode<T, P extends HTMLElement>(
 
     arbitrary.invokeChangeCallback = (nextState: FieldState<T>) => {
       const { node, state, onChange } = arbitrary;
+      console.log('invokeChangeCallback:', node, nextState, state);
       if (node != null) onChange(node, nextState, state);
+      arbitrary.setValue = nextState.change;
       arbitrary.state = nextState;
     };
 

@@ -24,7 +24,7 @@ class FieldSubscriber<T> {
 
   invokeChangeCallback(nextState: FieldState<T>) {
     const { state, onChange } = this;
-    onChange(node, nextState, state);
+    //onChange(node, nextState, state);
     this.state = nextState;
   }
 
