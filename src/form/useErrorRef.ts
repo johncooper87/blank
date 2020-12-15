@@ -1,56 +1,30 @@
-import { FieldState, FieldSubscription, FieldValidator } from 'final-form';
-import { useForm } from 'react-final-form';
+import { FieldValidator } from 'final-form';
+import { useFieldRef, ChangeCallback } from 'form/useFieldRef';
+import { errorSubscription } from './subscriptions'
 
-const subscription: FieldSubscription = {
-  touched: true,
-  error: true,
-  submitError: true,
-  dirtySinceLastSubmit: true
-};
+function useErrorRef<FieldValue>(name: string, validate?: FieldValidator<FieldValue>) {
 
-interface UseErrorConfig<T> {
-  validate?: FieldValidator<T>;
-  onErrorChange: (node: Element, error: string) => void;
-}
-
-function useErrorRef<T>(name: string, { validate, onErrorChange }: UseErrorConfig<T>) {
-
-  const form = useForm();
-  const _this_ref = useRef<Record<string, any>>({});
-  const _this = _this_ref.current;
-
-  if (!_this.registered) {
-
-    _this.registered = true;
-    _this.refCallback = (el: HTMLDivElement) => _this.node = el;
-
-    const callback = (state: FieldState<string>) => {
-
-      const { touched, error, submitError, dirtySinceLastSubmit } = state;
-      const { node } = _this;
+  const errorChangeCallback = useCallback<ChangeCallback<FieldValue, HTMLInputElement>>(
+    (node, nextState) => {
+      const { touched, error, submitError, dirtySinceLastSubmit } = nextState;
 
       const showError = (touched && error && typeof error === 'string')
         || (!dirtySinceLastSubmit && submitError && typeof submitError === 'string');
 
-      if (_this.showError !== showError || _this.error !== error) {
-        _this.showError = showError;
-        _this.error = error;
-        if (node != null) onErrorChange(node, showError ? error : '');
+      const prevError = node.innerText;
+      if (showError !== Boolean(prevError) || error !== prevError) {
+        node.innerText = showError ? error : '';
       }
-    };
-
-    _this.unsubscribe = form.registerField(name, callback, subscription, { getValidator: () => validate });
-  }
-
-  useEffect(() => {
-
-    return () => {
-      _this.unsubscribe();
-      _this_ref.current = null;
-    };
-  }, []);
+    }
+  , []);
   
-  return _this.refCallback;
+
+  const ref = useFieldRef(name, errorChangeCallback, {
+    subscription: errorSubscription,
+    validate
+  });
+
+  return ref;
 };
 
 export default useErrorRef;

@@ -90,8 +90,8 @@
 
 import { FieldValidator } from 'final-form';
 import { useFeildNameContext } from '../FieldNameContext';
-import { useFieldRef, ChangeCallback, ConnectedCallback } from 'form/useFieldRef';
-import { inputSubscription, errorSubscription } from '../subscriptions'
+import useInputRef, { UpdateCallback, InputCallback } from 'form/useInputRef';
+import useErrorRef from 'form/useErrorRef';
 
 interface TextFieldProps {
   name: string;
@@ -99,7 +99,7 @@ interface TextFieldProps {
   label?: string;
 }
 
-const connectedCallback: ConnectedCallback<string, HTMLInputElement> =
+const inputConnectedCallback: ConnectedCallback<string, HTMLInputElement> =
   (node, getState) =>  {
 
     const { value, change } = getState() || {};
@@ -124,10 +124,9 @@ const connectedCallback: ConnectedCallback<string, HTMLInputElement> =
     };
   }
 
-const valueChangeCallback: ChangeCallback<string, HTMLInputElement> =
-  (node, nextState, prevState) => {
-    if (nextState.dirty === false && prevState.dirty === true)
-      node.value = nextState.value || '';
+const updateInputCallback: UpdateCallback<string> =
+  (node, state) => {
+    node.value = state.value || '';
   }
 
 const errorChangeCallback: ChangeCallback<string, HTMLDivElement> =
@@ -148,12 +147,12 @@ function TextField({ name, validate, label, ...props }: TextFieldProps) {
 
   const _name = useFeildNameContext(name);
 
-  const inputRef = useFieldRef(_name, valueChangeCallback, {
+  const inputRef = useInputRef(_name, valueChangeCallback, {
     connectedCallback,
     subscription: inputSubscription
   });
 
-  const errorRef = useFieldRef(_name, errorChangeCallback, {
+  const errorRef = useErrorRef(_name, errorChangeCallback, {
     validate,
     subscription: errorSubscription
   });
