@@ -90,7 +90,7 @@
 
 import { FieldValidator } from 'final-form';
 import { useFeildNameContext } from '../FieldNameContext';
-import { useFormNode, ChangeCallback, ConnectedCallback } from 'form/useFormNode';
+import { useFieldRef, ChangeCallback, ConnectedCallback } from 'form/useFieldRef';
 import { inputSubscription, errorSubscription } from './subscriptions'
 
 interface TextFieldProps {
@@ -99,31 +99,38 @@ interface TextFieldProps {
   label?: string;
 }
 
-const handleConnected: ConnectedCallback<string, HTMLInputElement> =
-  (node, setValue, getState) =>  {
+const connectedCallback: ConnectedCallback<string, HTMLInputElement> =
+  (node, getState) =>  {
 
-    node.addEventListener('input', (event: InputEvent) => {
+    const { value, change } = getState() || {};
+    node.value = value || '';
+
+    const handleInput = (event: InputEvent) => {
       const { target } = event;
-      setValue(target.value);
-    });
+      change(target.value);
+    };
 
-    node.addEventListener('blur', () => {
+    const handleBlur = () => {
       const { touched, blur } = getState();
       if (!touched) blur();
-    });
+    };
 
-    const { value } = getState();
-    console.log(value)
-    node.value = value || '';
+    node.addEventListener('input', handleInput);
+    node.addEventListener('blur', handleBlur);
+
+    return () => {
+      node.removeEventListener('input', handleInput);
+      node.removeEventListener('blur', handleBlur);
+    };
   }
 
-const handleValueChange: ChangeCallback<string, HTMLInputElement> =
+const valueChangeCallback: ChangeCallback<string, HTMLInputElement> =
   (node, nextState, prevState) => {
     if (nextState.dirty === false && prevState.dirty === true)
       node.value = nextState.value || '';
   }
 
-const handleErrorChange: ChangeCallback<string, HTMLDivElement> =
+const errorChangeCallback: ChangeCallback<string, HTMLDivElement> =
   (node, nextState) => {
 
     const { touched, error, submitError, dirtySinceLastSubmit } = nextState;
@@ -141,12 +148,12 @@ function TextField({ name, validate, label, ...props }: TextFieldProps) {
 
   const _name = useFeildNameContext(name);
 
-  const inputRef = useFormNode(_name, handleValueChange, {
-    onConnected: handleConnected,
+  const inputRef = useFieldRef(_name, valueChangeCallback, {
+    connectedCallback,
     subscription: inputSubscription
   });
 
-  const errorRef = useFormNode(_name, handleErrorChange, {
+  const errorRef = useFieldRef(_name, errorChangeCallback, {
     validate,
     subscription: errorSubscription
   });
