@@ -91,7 +91,7 @@
 import { FieldValidator } from 'final-form';
 import { useFeildNameContext } from '../FieldNameContext';
 import { useFieldRef, ChangeCallback, ConnectedCallback } from 'form/useFieldRef';
-import { inputSubscription, errorSubscription } from './subscriptions'
+import { inputSubscription, errorSubscription } from '../subscriptions'
 
 interface TextFieldProps {
   name: string;

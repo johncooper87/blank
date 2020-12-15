@@ -3,7 +3,7 @@ import { useForm } from 'react-final-form';
 import { useEffect } from 'react';
 
 export type ChangeCallback<FieldValue, RefNode> = (node: RefNode, nextState: FieldState<FieldValue>, prevState: FieldState<FieldValue>) => void;
-export type DisconnectedCallback = () => void;
+type DisconnectedCallback = () => void;
 export type ConnectedCallback<FieldValue, RefNode> = (node: RefNode, getState: () => FieldState<FieldValue>) => DisconnectedCallback;
 
 type UseFieldRefConfig<FieldValue, RefNode> = {
@@ -15,7 +15,6 @@ type UseFieldRefConfig<FieldValue, RefNode> = {
 type UseFieldRefRecentValues<FieldValue, RefNode> = {
   node?: RefNode;
   state: FieldState<FieldValue>;
-  // disconnectedCallback?: DisconnectedCallback;
 }
 
 export function useFieldRef<FieldValue, RefNode extends HTMLElement>(
@@ -53,16 +52,7 @@ export function useFieldRef<FieldValue, RefNode extends HTMLElement>(
 
   const refCallback = useCallback((node: RefNode) => {
     recent.node = node;
-  }, [form, name, connectedCallback]);
-
-  // const refCallback = useCallback((node: RefNode) => {
-  //   if (node == null) recent.disconnectedCallback?.();
-  //   else {
-  //     const getState = () => form.getFieldState(name);
-  //     recent.disconnectedCallback = connectedCallback?.(node, getState);
-  //   }
-  //   recent.node = node;
-  // }, [form, name, connectedCallback]);
+  }, []);
 
   return refCallback;
 };

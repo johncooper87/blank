@@ -1,111 +1,54 @@
-import { FieldState, FieldSubscription, FormApi, Unsubscribe, FieldValidator } from 'final-form';
-import { useForm } from 'react-final-form';
+import { FieldState } from 'final-form';
+import { useFieldRef, ChangeCallback, ConnectedCallback } from 'form/useFieldRef';
+import { inputSubscription } from './subscriptions'
 
-const subscription: FieldSubscription = {
-  value: true,
-  dirty: true,
-};
-
-// type Callback<T> = (nextState: FieldState<T>, prevState: FieldState<T>) => void
-
-// class FieldSubscriber<T> {
-//   form: FormApi;
-//   name: string;
-//   currentState: FieldState<T> = Object();
-
-//   subscribe(form: FormApi, name: string, callback: Callback<T>, subscription: FieldSubscription, validate: FieldValidator<T>) {
-//     this.form = form;
-//     this.name = name;
-//     const invokeCallback = (state: FieldState<T>) => {
-//       callback(state, this.currentState);
-//       this.currentState = state;
-//     };
-//     this.currentState = Object();
-//     return form.registerField(name, invokeCallback, subscription, { getValidator: () => validate });
-//   }
-// }
-
-// class FieldDOMNode<T, P> extends FieldSubscriber<T> {
-//   node: HTMLElement;
-//   ref: React.RefCallback<P>;
-
-//   refCallback(node: HTMLElement) {
-//     this.node = node;
-//     if (node === null) return;
-//     this.refCallback()
-//   }
-// }
-
-function useInputRef<FieldValue = any>(
+function useInputRef<FieldValue>(
   name: string,
-  getNextValue: (event: InputEvent, currentValue: any) => FieldValue,
-  updateInputEl: (inputEl: HTMLInputElement, newValue: FieldValue) => void
+  updateInputEl: (inputEl: HTMLInputElement, fieldValue: FieldValue) => void,
+  getFieldValue: (inputEl: HTMLInputElement, getState: () => FieldState<FieldValue>) => FieldValue,
 ) {
 
-  const form = useForm();
-  const watcher = useArbitrary();
-
-  if (!watcher.initialized) {
-
-    watcher.initialized = true;
-
-    watcher.ref = (inputEl: HTMLInputElement) => {
-      watcher.inputEl = inputEl;
-      if (inputEl === null) return;
-      
-      const {
-        handleInputEvent, handleBlurEvent,
-        form, name, updateInputEl
-      } = watcher;
-
-      inputEl.addEventListener('input', handleInputEvent);
-      inputEl.addEventListener('blur', handleBlurEvent);
-
-      const { value } = form.getFieldState(name);
-      updateInputEl(inputEl, value);
+  const valueChangeCallback = useCallback<ChangeCallback<FieldValue, HTMLInputElement>>(
+    (node, nextState, prevState) => {
+      if (
+        nextState.dirty === false
+        && prevState.dirty === true
+        && node != null
+      ) updateInputEl(node, nextState.value);
     }
-
-    watcher.callback = (state: FieldState<FieldValue>) => {
-      const { value, dirty } = state;
-      if (dirty === false && watcher.dirty === true) if (watcher.inputEl) updateInputEl(watcher.inputEl, value);
-      watcher.dirty = dirty;
-    };
-
-    watcher.handleInputEvent = (event: InputEvent) => {
-      const { form, name, getNextValue } = watcher;
-      const { value } = form.getFieldState(name);
-      const nextValue = getNextValue(event, value);
-      form.change(name, nextValue);
-    };
-
-    watcher.handleBlurEvent = () => {
-      const { form, name } = watcher;
-      const { blur, touched } = form.getFieldState(name);
-      if (!touched) blur();
-    };
-
-  }
-
-  const shouldResubscribe = watcher.name !== name || watcher.form !== form;
-  if (shouldResubscribe) {
-    if (watcher.unsubscribe !== undefined) watcher.unsubscribe();
-    watcher.unsubscribe = form.registerField(name, watcher.callback, subscription);
-    watcher.name = name;
-    watcher.form = form;
-  }
-
-  watcher.getNextValue = getNextValue;
-
-  if (shouldResubscribe || watcher.updateInputEl !== updateInputEl) {
-    if (updateInputEl !== undefined) {
-      const { form, name, inputEl } = watcher;
-      const { value } = form.getFieldState(name);
-      if (watcher.inputEl) updateInputEl(inputEl, value);
-    }
-    watcher.updateInputEl = updateInputEl;
-  }
+  , [updateInputEl]);
   
-  return watcher.ref;
+  const connectedCallback = useCallback<ConnectedCallback<FieldValue, HTMLInputElement>>(
+    (node, getState) => {
+      const { value, change } = getState();
+      if (node != null) updateInputEl(node, value);
+
+      const handleInput = (event: InputEvent) => {
+        const nextValue = getFieldValue(event.target, getState);
+        change(nextValue);
+      };
+
+      const handleBlur = () => {
+        const { touched, blur } = getState();
+        if (!touched) blur();
+      };
+
+      node.addEventListener("input", handleInput);
+      node.addEventListener("blur", handleBlur);
+
+      return () => {
+        node.removeEventListener("input", handleInput);
+        node.removeEventListener("blur", handleBlur);
+      };
+    }
+  , [updateInputEl, getFieldValue]);
+
+  const ref = useFieldRef(name, valueChangeCallback, {
+    subscription: inputSubscription,
+    connectedCallback
+  });
+
+  return ref;
 };
 
 export default useInputRef;
