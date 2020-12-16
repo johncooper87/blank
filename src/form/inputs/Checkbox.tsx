@@ -42,7 +42,8 @@ interface CheckboxProps {
   label?: string;
 }
 
-function onInputEvent(event: InputEvent, _value = []) {
+function inputEventCallback(event: InputEvent, getState) {
+  const { value: _value = [] } = getState();
   const { value, checked } = event.target;
   if (value) {
     if (!checked) {
@@ -66,11 +67,11 @@ function onInputEvent(event: InputEvent, _value = []) {
   return checked;
 }
 
-function onReset(node: HTMLInputElement, _value = []) {
+function updateInputCallback(node: HTMLInputElement, _value = []) {
   const { value, checked } = node;
-  console.log(node);
-  console.log(_value);
-  console.log(value);
+  // console.log(node);
+  // console.log(_value);
+  // console.log(value);
   //if (!value) return;
   node.checked = _value.includes(value);
   // if (_value.includes(value) && !checked) node.checked = true;
@@ -82,7 +83,7 @@ function Checkbox({ name, value, label, ...props }: CheckboxProps) {
   const _name = useFeildNameContext(name);
   // console.log('Checkbox:', _name); //DEBUG
 
-  const inputRef = useInputRef<boolean | any[]>(_name, onInputEvent, onReset);
+  const inputRef = useInputRef<boolean | any[]>(_name, updateInputCallback, inputEventCallback);
 
   return <label {...props} style={{ padding: '4px' }}>
       {label}

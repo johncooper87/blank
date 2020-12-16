@@ -90,7 +90,7 @@
 
 import { FieldValidator } from 'final-form';
 import { useFeildNameContext } from '../FieldNameContext';
-import useInputRef, { UpdateCallback, InputCallback } from 'form/useInputRef';
+import useInputRef, { UpdateCallback, InputEventCallback } from 'form/useInputRef';
 import useErrorRef from 'form/useErrorRef';
 
 interface TextFieldProps {
@@ -99,63 +99,23 @@ interface TextFieldProps {
   label?: string;
 }
 
-const inputConnectedCallback: ConnectedCallback<string, HTMLInputElement> =
-  (node, getState) =>  {
-
-    const { value, change } = getState() || {};
-    node.value = value || '';
-
-    const handleInput = (event: InputEvent) => {
-      const { target } = event;
-      change(target.value);
-    };
-
-    const handleBlur = () => {
-      const { touched, blur } = getState();
-      if (!touched) blur();
-    };
-
-    node.addEventListener('input', handleInput);
-    node.addEventListener('blur', handleBlur);
-
-    return () => {
-      node.removeEventListener('input', handleInput);
-      node.removeEventListener('blur', handleBlur);
-    };
-  }
-
 const updateInputCallback: UpdateCallback<string> =
-  (node, state) => {
-    node.value = state.value || '';
+  (node, value) => {
+    node.value = value || '';
   }
 
-const errorChangeCallback: ChangeCallback<string, HTMLDivElement> =
-  (node, nextState) => {
-
-    const { touched, error, submitError, dirtySinceLastSubmit } = nextState;
-
-    const showError = (touched && error && typeof error === 'string')
-      || (!dirtySinceLastSubmit && submitError && typeof submitError === 'string');
-
-    const prevError = node.innerText;
-    if (showError !== Boolean(prevError) || error !== prevError) {
-      node.innerText = showError ? error : '';
-    }
+const inputEventCallback: InputEventCallback<string> =
+  (node) => {
+    return node.value;
   }
 
 function TextField({ name, validate, label, ...props }: TextFieldProps) {
 
   const _name = useFeildNameContext(name);
 
-  const inputRef = useInputRef(_name, valueChangeCallback, {
-    connectedCallback,
-    subscription: inputSubscription
-  });
+  const inputRef = useInputRef(_name, updateInputCallback, inputEventCallback);
 
-  const errorRef = useErrorRef(_name, errorChangeCallback, {
-    validate,
-    subscription: errorSubscription
-  });
+  const errorRef = useErrorRef(_name, validate);
   
   return <label {...props} style={{ padding: '4px', display: 'inline-flex' }}>
     {label}

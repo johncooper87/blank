@@ -2,13 +2,13 @@ import { FieldState } from 'final-form';
 import { useFieldRef, ChangeCallback, ConnectedCallback } from 'form/useFieldRef';
 import { inputSubscription } from './subscriptions'
 
-export type UpdateCallback<FieldValue> = (inputEl: HTMLInputElement, state: FieldState<FieldValue>) => void;
-export type InputCallback<FieldValue> = (inputEl: HTMLInputElement, getState: () => FieldState<FieldValue>) => FieldValue;
+export type UpdateCallback<FieldValue> = (inputEl: HTMLInputElement, state: FieldValue) => void;
+export type InputEventCallback<FieldValue> = (inputEl: HTMLInputElement, getState: () => FieldState<FieldValue>) => FieldValue;
 
 function useInputRef<FieldValue>(
   name: string,
   updateCallback: UpdateCallback<FieldValue>,
-  inputCallback: InputCallback<FieldValue>,
+  inputEventCallback: InputEventCallback<FieldValue>,
 ) {
 
   const valueChangeCallback = useCallback<ChangeCallback<FieldValue, HTMLInputElement>>(
@@ -17,7 +17,7 @@ function useInputRef<FieldValue>(
         nextState.dirty === false
         && prevState.dirty === true
         && node != null
-      ) updateCallback(node, nextState);
+      ) updateCallback(node, nextState.value);
     }
   , [updateCallback]);
   
@@ -27,7 +27,7 @@ function useInputRef<FieldValue>(
       if (node != null) updateCallback(node, value);
 
       const handleInput = (event: InputEvent) => {
-        const nextValue = inputCallback(event.target, getState);
+        const nextValue = inputEventCallback(event.target, getState);
         change(nextValue);
       };
 
@@ -44,7 +44,7 @@ function useInputRef<FieldValue>(
         node.removeEventListener("blur", handleBlur);
       };
     }
-  , [updateCallback, inputCallback]);
+  , [updateCallback, inputEventCallback]);
 
   const ref = useFieldRef(name, valueChangeCallback, {
     subscription: inputSubscription,
