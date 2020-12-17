@@ -1,10 +1,10 @@
 import { FieldValidator } from 'final-form';
-import { useFieldRef, ChangeCallback } from 'form/useFieldRef';
+import { useFieldRef, FieldStateChange } from 'form/useFieldRef';
 import { errorSubscription } from './subscriptions'
 
 function useErrorRef<FieldValue>(name: string, validate?: FieldValidator<FieldValue>) {
 
-  const errorChangeCallback = useCallback<ChangeCallback<FieldValue, HTMLInputElement>>(
+  const errorChangeCallback = useCallback<FieldStateChange<FieldValue, HTMLInputElement>>(
     (node, nextState) => {
       const { touched, error, submitError, dirtySinceLastSubmit } = nextState;
 

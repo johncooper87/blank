@@ -90,7 +90,7 @@
 
 import { FieldValidator } from 'final-form';
 import { useFeildNameContext } from '../FieldNameContext';
-import useInputRef, { UpdateCallback, InputEventCallback } from 'form/useInputRef';
+import useFieldInputRef, { ValueChange, ConnectInput } from 'form/useInputRef';
 import useErrorRef from 'form/useErrorRef';
 
 interface TextFieldProps {
@@ -99,12 +99,12 @@ interface TextFieldProps {
   label?: string;
 }
 
-const updateInputCallback: UpdateCallback<string> =
+const updateInputCallback: ValueChange<string> =
   (node, value) => {
     node.value = value || '';
   }
 
-const inputEventCallback: InputEventCallback<string> =
+const inputEventCallback: ConnectInput<string> =
   (node) => {
     return node.value;
   }
@@ -113,7 +113,7 @@ function TextField({ name, validate, label, ...props }: TextFieldProps) {
 
   const _name = useFeildNameContext(name);
 
-  const inputRef = useInputRef(_name, updateInputCallback, inputEventCallback);
+  const inputRef = useFieldInputRef(_name, updateInputCallback, inputEventCallback);
 
   const errorRef = useErrorRef(_name, validate);
   
