@@ -1,25 +1,25 @@
 import { FieldValidator, FieldSubscription } from 'final-form';
 import { useField } from 'react-final-form';
-import { FieldNameContext, useFeildNameContext } from 'form/FieldNameContext';
+import { NameContext, useNameContext } from './NameContext';
 
-const subscription: FieldSubscription = {
-};
+const subscription: FieldSubscription = {};
 
-interface FieldProps<T> {
-  name: string;
-  validate?: FieldValidator<T>;
-  children:  ReactNode;
+interface FieldProps<FeildValue> {
+  name: string
+  validate?: FieldValidator<FeildValue>
+  children:  ReactNode
 }
 
-function Field<T>({ name, validate, children }: FieldProps<T>) {
+function Field<FeildValue>({ name, validate, children }: FieldProps<FeildValue>) {
 
-  const _name = useFeildNameContext(name);
-
+  const _name = useNameContext(name);
   useField(_name, { validate, subscription });
 
-  return <FieldNameContext.Provider value={_name}>
-    {children}
-  </FieldNameContext.Provider>
+  return (
+    <NameContext.Provider value={_name}>
+      {children}
+    </NameContext.Provider>
+  );
 }
 
 export default Field;

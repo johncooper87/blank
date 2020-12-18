@@ -33,7 +33,7 @@
 
 // export default memo(Checkbox);
 
-import { useFeildNameContext } from 'form/FieldNameContext';
+import { useNameContext } from 'form/NameContext';
 import { useInputRef, ValueChange, GetNextValue } from 'form/useInputRef';
 
 interface CheckboxProps {
@@ -49,7 +49,7 @@ const handleValueChange: ValueChange<CheckboxValue> =
     const { value } = node;
     if (value && nextValue instanceof Array) node.checked = nextValue.includes(value);
     else node.checked = Boolean(nextValue);
-  }
+  };
 
 const getNextValue: GetNextValue<CheckboxValue> = 
   (node, getState) =>  {
@@ -74,19 +74,19 @@ const getNextValue: GetNextValue<CheckboxValue> =
       }
     };
     return checked;
-  }
+  };
 
 function Checkbox({ name, value, label, ...props }: CheckboxProps) {
 
-  const _name = useFeildNameContext(name);
-  // console.log('Checkbox:', _name); //DEBUG
-
+  const _name = useNameContext(name);
   const inputRef = useInputRef<CheckboxValue>(_name, handleValueChange, getNextValue);
 
-  return <label {...props} style={{ padding: '4px' }}>
+  return (
+    <label {...props} style={{ padding: '4px' }}>
       {label}
       <input type="checkbox" name={_name} ref={inputRef} value={value} style={{ marginLeft: '4px' }} />
-    </label>;
-};
+    </label>
+  );
+}
 
 export default memo(Checkbox);

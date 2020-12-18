@@ -1,9 +1,9 @@
 import { FieldState } from 'final-form';
-import { useFieldRef, FieldStateChange, ConnectElement } from 'form/useFieldRef';
-import { inputSubscription } from './subscriptions'
+import { useFieldRef, FieldStateChange, ConnectElement } from './useFieldRef';
+import { inputSubscription } from './subscriptions';
 
-export type ValueChange<FieldValue> = (node: HTMLInputElement, value: FieldValue) => void;
-export type GetNextValue<FieldValue> = (node: HTMLInputElement, getState: () => FieldState<FieldValue>) => FieldValue;
+export type ValueChange<FieldValue> = (node: HTMLInputElement, value: FieldValue) => void
+export type GetNextValue<FieldValue> = (node: HTMLInputElement, getState: () => FieldState<FieldValue>) => FieldValue
 
 export function useInputRef<FieldValue>(
   name: string,
@@ -52,4 +52,4 @@ export function useInputRef<FieldValue>(
   });
 
   return ref;
-};
+}

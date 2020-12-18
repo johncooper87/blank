@@ -9,7 +9,6 @@ const subscription: FormSubscription = {
 };
 
 function SubmitButton({ disablePristine = false }) {
-  // console.log('SubmitButton'); //DEBUG
 
   const { hasValidationErrors, submitFailed, dirtySinceLastSubmit, pristine } = useFormState({ subscription });
   const { submit } = useForm();

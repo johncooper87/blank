@@ -1,21 +1,21 @@
 import { FieldValidator } from 'final-form';
-import { useFieldRef, FieldStateChange } from 'form/useFieldRef';
+import { useFieldRef, FieldStateChange } from './useFieldRef';
 import { errorSubscription } from './subscriptions'
+import shouldDisplayFieldError from './shouldDisplayFieldError'
 
-type RefError = HTMLDivElement | HTMLSpanElement | HTMLParagraphElement | HTMLLabelElement;
+type RefError = HTMLDivElement | HTMLSpanElement | HTMLParagraphElement | HTMLLabelElement
 
 function useErrorRef<FieldValue>(name: string, validate?: FieldValidator<FieldValue>) {
 
   const handleStateChange = useCallback<FieldStateChange<RefError, FieldValue>>(
     (node, nextState) => {
-      const { touched, error, submitError, dirtySinceLastSubmit } = nextState;
-
-      const showError = (touched && error && typeof error === 'string')
-        || (!dirtySinceLastSubmit && submitError && typeof submitError === 'string');
+      const showError = shouldDisplayFieldError(nextState);
+      const { error, submitError } = nextState;
+      const _error = error || submitError;
 
       const currentError = node.innerText;
-      if (showError !== Boolean(currentError) || error !== currentError) {
-        node.innerText = showError ? error : '';
+      if (showError !== Boolean(currentError) || _error !== currentError) {
+        node.innerText = showError ? _error : '';
       }
     }
   , []);
@@ -26,6 +26,6 @@ function useErrorRef<FieldValue>(name: string, validate?: FieldValidator<FieldVa
   });
 
   return ref;
-};
+}
 
 export default useErrorRef;

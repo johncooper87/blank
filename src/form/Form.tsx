@@ -4,24 +4,27 @@ import { useCallback } from 'react';
 import { Form as FF_Form, FormProps as FF_FormProps } from 'react-final-form';
 
 type FormProps<FormValues, InitialFormValues> =
-  Pick<FF_FormProps<FormValues, InitialFormValues>,'initialValues' | 'validate'>
+  Pick<FF_FormProps<FormValues, InitialFormValues>, 'initialValues' | 'validate'>
   & {
-    children: ReactNode;
+    children: ReactNode
     onSubmit: (
       values: FormValues,
       initialValues: InitialFormValues,
-    ) => void | SubmissionErrors | Promise<SubmissionErrors>;
-  };
+    ) => void | SubmissionErrors | Promise<SubmissionErrors>
+  }
 
-const subscription: FormSubscription = {
-};
+const subscription: FormSubscription = {};
 
 const mutators = {
   ...arrayMutators
 };
 
-function Form<FormValues = Record<string, any>, InitialFormValues = Partial<FormValues>>({ onSubmit, initialValues, validate, children }: FormProps<FormValues, InitialFormValues>) {
-  // console.log('Form') /*DEBUG*/
+function Form<FormValues = Record<string, any>, InitialFormValues = Partial<FormValues>>({
+    onSubmit,
+    initialValues,
+    validate,
+    children
+  }: FormProps<FormValues, InitialFormValues>) {
 
   const _onSubmit = useCallback((values) => onSubmit(values, initialValues), [initialValues]);
 
@@ -31,11 +34,7 @@ function Form<FormValues = Record<string, any>, InitialFormValues = Partial<Form
     validate,
     subscription,
     mutators,
-    children: () => {
-      return <>
-        {children}
-      </>;
-    }
+    children: () => <>{children}</>
   });
 }
 

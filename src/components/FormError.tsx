@@ -4,15 +4,12 @@ import { useFormState } from 'react-final-form';
 const subscription: FormSubscription = {
   error: true,
   submitError: true,
-  submitFailed: true,
+  submitFailed: true
 };
 
-interface FormErrorProps {
-}
+interface FormErrorProps {}
 
-function FieldError({}: FormErrorProps) {
-
-  // console.log('FormError'); //DEBUG
+function FromError({}: FormErrorProps) {
 
   const {
     error, submitError, submitFailed
@@ -22,8 +19,11 @@ function FieldError({}: FormErrorProps) {
   || (submitError && typeof submitError === 'string');
 
   return showError
-    ? <div style={{ color: 'red', fontSize: '14px' }}>{error || submitError}</div>
-    : null;
-};
+    ? (
+      <div style={{ color: 'red', fontSize: '14px' }}>
+        {error || submitError}
+      </div>
+    ) : null;
+}
 
-export default memo(FieldError);
+export default memo(FromError);

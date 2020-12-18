@@ -2,19 +2,19 @@ import { FieldState, FieldSubscription, FieldValidator } from 'final-form';
 import { useForm } from 'react-final-form';
 import { useEffect } from 'react';
 
-export type FieldStateChange<RefNode, FieldValue> = (node: RefNode, nextState: FieldState<FieldValue>, prevState: FieldState<FieldValue>) => void;
-type DisconnectElement = () => void;
-export type ConnectElement<RefNode, FieldValue> = (node: RefNode, getState: () => FieldState<FieldValue>) => DisconnectElement;
+export type FieldStateChange<RefNode, FieldValue> = (node: RefNode, nextState: FieldState<FieldValue>, prevState: FieldState<FieldValue>) => void
+type DisconnectElement = () => void
+export type ConnectElement<RefNode, FieldValue> = (node: RefNode, getState: () => FieldState<FieldValue>) => DisconnectElement
 
 type UseFieldRefConfig<RefNode, FieldValue> = {
-  subscription?: FieldSubscription;
-  validate?: FieldValidator<FieldValue>;
-  connect?: ConnectElement<RefNode, FieldValue>;
+  subscription?: FieldSubscription
+  validate?: FieldValidator<FieldValue>
+  connect?: ConnectElement<RefNode, FieldValue>
 }
 
 type UseFieldRefRecentValues<RefNode, FieldValue> = {
-  node?: RefNode;
-  state: FieldState<FieldValue>;
+  node?: RefNode
+  state: FieldState<FieldValue>
 }
 
 export function useFieldRef<RefNode extends HTMLElement, FieldValue>(
@@ -55,4 +55,4 @@ export function useFieldRef<RefNode extends HTMLElement, FieldValue>(
   }, []);
 
   return refCallback;
-};
+}
