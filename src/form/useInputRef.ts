@@ -3,12 +3,12 @@ import { useFieldRef, FieldStateChange, ConnectElement } from 'form/useFieldRef'
 import { inputSubscription } from './subscriptions'
 
 export type ValueChange<FieldValue> = (node: HTMLInputElement, value: FieldValue) => void;
-export type ConnectInput<FieldValue> = (node: HTMLInputElement, getState: () => FieldState<FieldValue>) => FieldValue;
+export type GetNextValue<FieldValue> = (node: HTMLInputElement, getState: () => FieldState<FieldValue>) => FieldValue;
 
-function useInputRef<FieldValue>(
+export function useInputRef<FieldValue>(
   name: string,
   valueChange: ValueChange<FieldValue>,
-  transformEvent: ConnectInput<FieldValue>,
+  getNextValue: GetNextValue<FieldValue>,
 ) {
 
   const handleStateChange = useCallback<FieldStateChange<HTMLInputElement, FieldValue>>(
@@ -21,13 +21,13 @@ function useInputRef<FieldValue>(
     }
   , [valueChange]);
   
-  const handleConnect = useCallback<ConnectElement<HTMLInputElement, FieldValue>>(
+  const connectInput = useCallback<ConnectElement<HTMLInputElement, FieldValue>>(
     (node, getState) => {
       const { value, change } = getState();
       if (node != null) valueChange(node, value);
 
       const handleInput = (event: InputEvent) => {
-        const nextValue = transformEvent(event.target, getState);
+        const nextValue = getNextValue(event.target, getState);
         change(nextValue);
       };
 
@@ -44,14 +44,12 @@ function useInputRef<FieldValue>(
         node.removeEventListener("blur", handleBlur);
       };
     }
-  , [valueChange, transformEvent]);
+  , [valueChange, getNextValue]);
 
   const ref = useFieldRef(name, handleStateChange, {
     subscription: inputSubscription,
-    connect: handleConnect
+    connect: connectInput
   });
 
   return ref;
 };
-
-export default useInputRef;

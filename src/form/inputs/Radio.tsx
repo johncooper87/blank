@@ -35,7 +35,7 @@
 // export default memo(Radio);
 
 import { useFeildNameContext } from 'form/FieldNameContext';
-import useInputRef from 'form/useInputRef';
+import { useInputRef, ValueChange, GetNextValue } from 'form/useInputRef';
 
 interface RadioProps {
   name?: string;
@@ -43,21 +43,24 @@ interface RadioProps {
   label?: string;
 }
 
-function getNextValue(event: InputEvent) {
-  const { value, checked } = event.target;
-  if (checked) return value;
-}
+const handleValueChange: ValueChange<string> = 
+  (node: HTMLInputElement, value: string) => {
+    node.checked = node.value === value;
+  }
 
-function updateInputEl(node: HTMLInputElement, value: string) {
-  node.checked = node.value === value;
-}
+
+const getNextValue: GetNextValue<string> = 
+  (node) => {
+    const { value, checked } = node;
+    if (checked) return value;
+  }
 
 function Radio({ name, value, label, ...props }: RadioProps) {
 
   const _name = useFeildNameContext(name);
   // console.log('Radio:', _name); //DEBUG
 
-  const inputRef = useInputRef<string>(_name, getNextValue, updateInputEl);
+  const inputRef = useInputRef<string>(_name, handleValueChange, getNextValue);
 
   return <label {...props} style={{ padding: '4px' }}>
       {label}

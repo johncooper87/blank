@@ -34,7 +34,7 @@
 // export default memo(Checkbox);
 
 import { useFeildNameContext } from 'form/FieldNameContext';
-import useInputRef from 'form/useInputRef';
+import { useInputRef, ValueChange, GetNextValue } from 'form/useInputRef';
 
 interface CheckboxProps {
   name?: string;
@@ -42,48 +42,46 @@ interface CheckboxProps {
   label?: string;
 }
 
-function inputEventCallback(event: InputEvent, getState) {
-  const { value: _value = [] } = getState();
-  const { value, checked } = event.target;
-  if (value) {
-    if (!checked) {
-      //_value.splice(_value.indexOf(value), 1);
-      const spliceIndex = _value.indexOf(value);
-      if (spliceIndex === -1) return [..._value];
-      return [
-        ..._value.slice(0, spliceIndex),
-        ..._value.slice(spliceIndex + 1)
-      ];
-    } else {
-      //_value.push(value);
-      const index = _value.indexOf(value);
-      if (index !== -1) return [..._value];
-      return [
-        ..._value,
-        value
-      ];
-    }
-  };
-  return checked;
-}
+type CheckboxValue = boolean | string[]
 
-function updateInputCallback(node: HTMLInputElement, _value = []) {
-  const { value, checked } = node;
-  // console.log(node);
-  // console.log(_value);
-  // console.log(value);
-  //if (!value) return;
-  node.checked = _value.includes(value);
-  // if (_value.includes(value) && !checked) node.checked = true;
-  // else if (!_value.includes(value) && checked) node.checked = false;
-}
+const handleValueChange: ValueChange<CheckboxValue> = 
+  (node: HTMLInputElement, nextValue) => {
+    const { value } = node;
+    if (value && nextValue instanceof Array) node.checked = nextValue.includes(value);
+    else node.checked = Boolean(nextValue);
+  }
+
+const getNextValue: GetNextValue<CheckboxValue> = 
+  (node, getState) =>  {
+    const { value, checked } = node;
+    if (value) {
+      let checkedValues = getState().value;
+      checkedValues = checkedValues instanceof Array ? checkedValues : [];
+      if (!checked) {
+        const spliceIndex = checkedValues.indexOf(value);
+        if (spliceIndex === -1) return [...checkedValues];
+        return [
+          ...checkedValues.slice(0, spliceIndex),
+          ...checkedValues.slice(spliceIndex + 1)
+        ];
+      } else {
+        const index = checkedValues.indexOf(value);
+        if (index !== -1) return [...value];
+        return [
+          ...checkedValues,
+          value
+        ];
+      }
+    };
+    return checked;
+  }
 
 function Checkbox({ name, value, label, ...props }: CheckboxProps) {
 
   const _name = useFeildNameContext(name);
   // console.log('Checkbox:', _name); //DEBUG
 
-  const inputRef = useInputRef<boolean | any[]>(_name, updateInputCallback, inputEventCallback);
+  const inputRef = useInputRef<CheckboxValue>(_name, handleValueChange, getNextValue);
 
   return <label {...props} style={{ padding: '4px' }}>
       {label}

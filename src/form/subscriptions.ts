@@ -2,7 +2,7 @@ import { FieldSubscription } from 'final-form';
 
 export const inputSubscription: FieldSubscription = {
   value: true,
-  dirty: true,
+  dirty: true
 };
 
 export const errorSubscription: FieldSubscription = {
