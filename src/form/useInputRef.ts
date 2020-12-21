@@ -8,7 +8,7 @@ export type GetNextValue<FieldValue> = (node: HTMLInputElement, getState: () => 
 export function useInputRef<FieldValue>(
   name: string,
   valueChange: ValueChange<FieldValue>,
-  getNextValue: GetNextValue<FieldValue>,
+  getNextValue: GetNextValue<FieldValue>
 ) {
 
   const handleStateChange = useCallback<FieldStateChange<HTMLInputElement, FieldValue>>(
@@ -26,8 +26,8 @@ export function useInputRef<FieldValue>(
       const { value, change } = getState();
       if (node != null) valueChange(node, value);
 
-      const handleInput = (event: InputEvent) => {
-        const nextValue = getNextValue(event.target, getState);
+      const handleInput = (event: Event) => {
+        const nextValue = getNextValue(event.target as HTMLInputElement, getState);
         change(nextValue);
       };
 

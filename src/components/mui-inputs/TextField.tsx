@@ -1,14 +1,13 @@
 import { FieldValidator } from 'final-form';
 import { useNameContext } from '../../form/NameContext';
 import { useInputRef, ValueChange, GetNextValue } from 'form/useInputRef';
-import useErrorRef from 'form/useErrorRef';
+import useError from 'form/useError';
 import MuiTextField from '@material-ui/core/TextField';
+import { TextFieldProps as MuiTextFieldProps } from '@material-ui/core';
 import dispatchReactChangeEvent from 'common/dispatchReactChangeEvent';
 
-interface TextFieldProps {
-  name: string;
-  validate?: FieldValidator<string>;
-  label?: string;
+type TextFieldProps = MuiTextFieldProps & {
+  validate?: FieldValidator<string>
 }
 
 const handleValueChange: ValueChange<string> =
@@ -16,13 +15,14 @@ const handleValueChange: ValueChange<string> =
 
 const getNextValue: GetNextValue<string> = node => node.value;
 
-function TextField({ name, validate, label, ...props }: TextFieldProps) {
+function TextField({ name, validate, label, helperText, ...props }: TextFieldProps) {
 
   const _name = useNameContext(name);
   const inputRef = useInputRef(_name, handleValueChange, getNextValue);
-  // const errorRef = useErrorRef(_name, validate);
+  const error = useError(_name, validate);
+  console.log('MuiTextField error:', error);
   
-  return <MuiTextField inputRef={inputRef} label={label} />;
+  return <MuiTextField inputRef={inputRef} label={label} error={Boolean(error)} helperText={error ? error : helperText} {...props} />;
   // return (
   //   <label {...props} style={{ padding: '4px', display: 'inline-flex' }}>
   //     {label}
