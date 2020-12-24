@@ -1,4 +1,9 @@
-import { useQuery, useMutation, QueryConfig, queryCache } from 'react-query';
+import { useQuery, QueryClient, QueryClientProvider, QueryCache, useMutation, QueryFunction } from 'react-query';
+
+const queryCache = new QueryCache();
+const queryClient = new QueryClient({
+  queryCache
+});
 
 const users = [{
   id: 0,
@@ -11,12 +16,13 @@ const users = [{
   name: 'John2'
 }];
 
-async function fetchUser(key, { userId }) {
+const fetchUser = async (id) => {
 
-  if (userId === null) return queryCache.getQueryData([key, 2]);
+  console.log('fetch user:', id);
+  //if (userId === null) return queryCache.getQueryData([key, 2]);
 
   const user = await new Promise(resolve => setTimeout(
-    () => resolve(users[userId]),
+    () => resolve(users[id]),
     1000
   ));
   return user;
@@ -28,16 +34,21 @@ function QueryExample() {
 
   const [userId, setUserId] = useState(null);
 
-  const { data, isFetching } = useQuery<any>(['user', { userId }], fetchUser, {
+  const { data, isFetching } = useQuery<any>(['user', userId], () => fetchUser(userId), {
     enabled: userId !== null,
-    cacheTime: 0,
-    //cacheTime: 1000000,
+    // cacheTime: 0,
+    // cacheTime: 1000000,
     keepPreviousData: true,
     refetchOnWindowFocus: false,
   });
 
-  console.log(queryCache.getQueries(['user'])[0]);
-  //console.log(queryCache.getQueries(['user']).filter(q => q.gcTimeout === undefined)[0]);
+  // console.log(queryCache);
+  // console.log(queryClient);
+  console.log(queryClient.getQueryData('user', { active: true }));
+  console.log(queryCache.find('user', { active: true }));
+  // console.log(queryCache.findAll('user', { 
+  //   active: true
+  // }));
 
   return <div>
 
@@ -49,19 +60,33 @@ function QueryExample() {
     </div>
 
     <div>
-      <button onClick={() => queryCache.refetchQueries(['user'])}>refetch</button>
+      <button onClick={() => queryClient.refetchQueries('user', { active: true })}>refetch</button>
+      <button onClick={() => {
+        const queryKey = queryClient.getQueryCache().find('user', { active: true }).queryKey;
+        queryClient.setQueryData(queryKey, { name: 'John22' });
+      }}>cahnge</button>
     </div>
 
-    <div>
+    {/* <div>
       {isFetching
         ? '...loading'
         : <>
           {data?.name}
         </>
       }
+    </div> */}
+    <div>
+      {isFetching && '...loading'}
+      <div>
+        {data?.name}
+      </div>
     </div>
 
   </div>;
 }
 
-export default QueryExample;
+export default () => {
+  return <QueryClientProvider client={queryClient} >
+    <QueryExample />
+  </QueryClientProvider>;
+};
