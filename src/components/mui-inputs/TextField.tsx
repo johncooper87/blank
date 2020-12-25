@@ -4,14 +4,17 @@ import { useInputRef, ValueChange, GetNextValue } from 'form/useInputRef';
 import useError from 'form/useError';
 import MuiTextField from '@material-ui/core/TextField';
 import { TextFieldProps as MuiTextFieldProps } from '@material-ui/core';
-import dispatchReactChangeEvent from 'common/dispatchReactChangeEvent';
+import { valuePropSetter, dispatchInputEvent } from './helpers';
 
 type TextFieldProps = MuiTextFieldProps & {
   validate?: FieldValidator<string>
 }
 
 const handleValueChange: ValueChange<string> =
-  (node, value = '') => dispatchReactChangeEvent(node, { value });
+  (node, value = '') => {
+    valuePropSetter.call(node, value);
+    dispatchInputEvent(node);
+  };
 
 const getNextValue: GetNextValue<string> = node => node.value;
 
