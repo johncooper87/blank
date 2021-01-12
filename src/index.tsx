@@ -31,11 +31,11 @@ function App() {
 
   return <div className="root1">
 
-    <div>
+    {/* <div>
       <button onClick={() => _history.push('/admin')}>go admin page</button>
       <button onClick={() => _history.push('/')}>go home page</button>
     </div>
-    <div>Is admin page: {isAdminPage}</div>
+    <div>Is admin page: {isAdminPage}</div> */}
 
 
 
@@ -55,7 +55,7 @@ function App() {
       {showComp1 && <Comp1 />}
     </Suspense> */}
 
-    <QueryExample />
+    {/* <QueryExample /> */}
     <FormExample />
 
   </div>;

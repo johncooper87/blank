@@ -17,9 +17,9 @@ function FieldError({ name }: FieldErrorProps) {
 
   return displayError
     ? (
-      <div style={{ color: 'red', fontSize: '14px' }}>
+      <P style={{ color: 'red', fontSize: '14px' }}>
         {error || submitError}
-      </div>
+      </P>
     ) : null;
 }
 

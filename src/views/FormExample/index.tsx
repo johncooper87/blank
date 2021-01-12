@@ -20,14 +20,9 @@ function FormExample() {
     setInitialValues(values);
   };
 
-  const [state1, setState1] = useState(0);
-  const refCallback = useCallback((node) => console.log('refCallback:', state1, node), [state1]);
-
   return <div>
 
     <Form onSubmit={onSubmit} initialValues={initialValues}>
-
-      <button ref={refCallback} onClick={() => setState1(val => val + 1)}>change state1</button>
     
       <div style={{ padding: '8px' }}>
         <TextField label="Firstname*" name="firstname" validate={validators.name} />
@@ -44,7 +39,7 @@ function FormExample() {
       </div>
 
       <div style={{ padding: '8px' }}>
-        <div>Bad habbits:</div>
+        <P>Bad habbits:</P>
         <Field name="badHabbits" validate={validators.badHabbits}>
           <Checkbox label="Alcohol" value="alcohol" />
           <Checkbox label="Smoking" value="smoking" />
@@ -54,19 +49,19 @@ function FormExample() {
       </div>
 
       <div style={{ padding: '8px' }}>
-        <div>Wishlist:</div>
+        <P>Wishlist:</P>
         <FieldArray name="wishlist" validate={validators.wishlist}>
           {({ map, push, remove }) => <>
           
             {map(
               (name, index) => <div key={index} style={{ padding: '4px' }}>
                 <TextField label={'wish ' + index} name={name} />
-                <button onClick={() => remove(index)}>Delete</button>
+                <Button size="small" color="primary" variant="contained" style={{ marginLeft: '4px' }} onClick={() => remove(index)}>Delete</Button>
               </div>
             )}
 
             <div style={{ padding: '6px' }}>
-              <button onClick={() => push(null)}>Add more wish</button>
+              <Button size="small" color="primary" variant="contained" onClick={() => push(null)}>Add more wish</Button>
             </div>
           
           </>}
@@ -84,7 +79,7 @@ function FormExample() {
 
       <div style={{ padding: '8px' }}>
         <ResetButton />
-        <SubmitButton disablePristine={false} />
+        <SubmitButton disablePristine={false} style={{ marginLeft: '4px' }} />
       </div>
 
     </Form>

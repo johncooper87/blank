@@ -28,6 +28,9 @@ declare const ResetButton: typeof import('./components/ResetButton').default;
 declare const FieldError: typeof import('./components/FieldError').default;
 declare const FormError: typeof import('./components/FormError').default;
 
-declare const TextField: typeof import('./components/inputs/TextField').default;
-declare const Radio: typeof import('./components/inputs/Radio').default;
-declare const Checkbox: typeof import('./components/inputs/Checkbox').default;
+declare const TextField: typeof import('./components/mui-inputs/TextField').default;
+declare const Radio: typeof import('./components/mui-inputs/Radio').default;
+declare const Checkbox: typeof import('./components/mui-inputs/Checkbox').default;
+
+declare const P: typeof import('@material-ui/core/Typography').default;
+declare const Button: typeof import('@material-ui/core/Button').default;

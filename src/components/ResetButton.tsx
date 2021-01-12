@@ -5,14 +5,21 @@ const subscription: FormSubscription = {
   pristine: true
 };
 
-function ResetButton() {
+const ResetButton: React.FC = (props) => {
   const { pristine } = useFormState({ subscription });
   const { reset } = useForm();
 
   return (
-    <button disabled={pristine} onClick={() => reset()}>
+    <Button
+      size="small"
+      {...props}
+      color="primary"
+      variant="contained"
+      disabled={pristine}
+      onClick={() => reset()}
+    >
       reset
-    </button>
+    </Button>
   );
 }
 
